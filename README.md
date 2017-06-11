@@ -1,5 +1,5 @@
 # Node.js-Uploader-with-Progress-Bar
-Complete code for a Node.js file uploader, complete with with Progress Bar, Validation, Live List, Email Notification, &amp; Form Reset
+Code for a Node.js file uploader, complete with with Progress Bar, Validation, Live List, Email Notification, &amp; Form Reset.
 
 ### Installation instructions:
 
@@ -11,4 +11,8 @@ $ node index
 # In your browser, n avigate to http://localhost:5000/Node-js-Uploader
 ```
 
-Please contact me at sbreese@gmail.com with any corrections to these instructions!
+## Questions or Comments
+Please contact me at sbreese@gmail.com with any corrections to these instructions or the code.
+
+Steve Breese
+www.SteveBreese.com
