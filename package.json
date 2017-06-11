@@ -1,0 +1,29 @@
+{
+  "name": "node-js-file-uploader",
+  "version": "0.1.4",
+  "description": "A Node.js File Uploader app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ejs": "^2.3.1",
+    "express": "~4.9.x",
+    "formidable": "~1.1.x",
+    "nodemailer": "~4.0.x",
+  },
+  "engines": {
+    "node": "6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbreese/Node.js-Uploader-with-Progress-Bar"
+  },
+  "keywords": [
+    "node",
+    "Steve Breese",
+    "file uploader",
+    "progress bar"
+  ],
+  "license": "MIT"
+}

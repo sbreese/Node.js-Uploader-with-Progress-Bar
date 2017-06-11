@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="ie"><![endif]-->
+<!--[if !IE]><!-->
+<html>
+<!--<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <title>Node.js File Uploader with Progress Bar, Validation, and Email Notification</title>
+    
+    <!-- Viewport meta tag to prevent iPhone from scaling our page -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link href="./stylesheets/Node-js-uploader.css" rel="stylesheet">
+    <title></title>
+</head>
+<body lang="en">
+
+<div id="container-content">
+    <article id="content">
+        <section class="container-fluid" id="portfolio">
+            <header>
+                <h3>Node.js Uploader</h3>
+                <p></p>
+            </header>
+            <div class="row">
+                <article class="col-md-12">
+                    <!-- ///////////////////////// BEGIN CONTENT ///////////////////////////// -->
+                    <div class="container" id="uploader">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="panel panel-default" id="msg-from-server-div" style="display: none">
+                                    <div class="panel-body" id="server-msg"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <span class="glyphicon glyphicon-cloud-upload"></span>
+                                        <h2 class="Node-js_Uploader_Title">Node.js Uploader</h2>
+                                        <h4>with Validation, Live List, Email Notification, & Form Reset</h4>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar"></div>
+                                        </div><button class="btn btn-lg upload-btn" type="button">Upload File</button>
+                                        <div id="fileTypes">
+                                            Accepted File Types:<span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <h5>File List</h5>
+                                        <ul id="file-list" style="list-style: none;"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><input id="upload-input" multiple="multiple" name="uploads[]" type="file"><br>
+                    <p>This is an enhanced version of Fady Makram's <a href="https://coligo.io/building-ajax-file-uploader-with-node/">File Uploader</a>. Enhancements to his code include:</p>
+                    <ul>
+                        <li><q>File Size & Type Validation</q>, which prevents abusive use of the file upload feature</li>
+                        <li><q>Live List</q>, which displays all files currently in the /upload directory and highlights the new upload</li>
+                        <li><q>Email Notifaction</q>, which automatically sends an email from any specified email account to any email address.</li>
+                        <li><q>Form Reset</q>, which returns the form to its original state when uploads complete</li>
+                    </ul>
+                    <p></p>
+                    <script src="https://code.jquery.com/jquery-2.2.0.min.js">
+                    </script>
+                    <script>
+                        var acceptableExt = ["pdf","png","jpg","gif","mp4","mov","avi","txt","mpeg4","flv"];
+                        //$.each(acceptableExt,function( key, val ) {
+                        $("#fileTypes span").append( acceptableExt.join(", "));
+                        //});
+
+                        $('.upload-btn').on('click', function (){
+                            $('#upload-input').click();
+                            $('.progress-bar').text('0%');
+                            $('.progress-bar').width('0%');
+                        });
+
+                        $('#upload-input').on('change', function(){
+
+                            $('.upload-btn').prop('disabled', true);
+
+                            var files = $(this).get(0).files;
+
+                            $("#msg-from-server-div").slideUp("slow");
+                            $("#server-msg").html("");
+                            if (files.length > 0){
+                                // create a FormData object which will be sent as the data payload in the
+                                // AJAX request
+                                var formData = new FormData();
+
+                                // loop through all the selected files and add them to the formData object
+                                for (var i = 0; i < files.length; i++) {
+                                    var file = files[i];
+
+                                    // add the files to formData object for the data payload
+                                    formData.append('uploads[]', file, file.name);
+                                }
+                                $("#server-msg").html("<h4 style='margin-bottom: 0'>Upload in Progress!<\/h4><br><strong>0% complete<\/strong>");
+                                $("#msg-from-server-div").slideDown("slow");
+
+                                $.ajax({
+                                    url: '/Node-js-Uploader',
+                                    type: 'POST',
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function(data){
+                                        console.log('upload successful!\n' + data);
+                                        console.log("which is type: ", typeof data);
+                                        LiveList(file.name, data);
+                                    },
+                                    xhr: function() {
+                                        // create an XMLHttpRequest
+                                        var xhr = new XMLHttpRequest();
+
+                                        // listen to the 'progress' event
+                                        xhr.upload.addEventListener('progress', function(evt) {
+
+                                            if (evt.lengthComputable) {
+                                                // calculate the percentage of upload completed
+                                                var percentComplete = evt.loaded / evt.total;
+                                                percentComplete = parseInt(percentComplete * 100);
+
+                                                // update the Bootstrap progress bar with the new percentage
+                                                $('.progress-bar').text(percentComplete + '%');
+                                                $('.progress-bar').width(percentComplete + '%');
+                                                $("#server-msg").html("<h4 style='margin-bottom: 0'>Upload in Progress!<\/h4><br><strong>"+percentComplete+"% complete<\/strong>");
+
+                                                // once the upload reaches 100%, set the progress bar text to done
+                                                if (percentComplete === 100) {
+                                                    $('.progress-bar').html('Done');
+                                                }
+
+                                            }
+
+                                        }, false);
+
+                                        return xhr;
+                                    }
+                                });
+
+                            }
+                        });
+
+                        // BEGIN live list:
+                        function LiveList(thisFile, serverMsg) {
+                            if (serverMsg) {
+                                $("#server-msg").html("<h2>"+serverMsg+"<\/h2>");
+                                $("#msg-from-server-div").slideDown("slow");
+                                setTimeout(function(){ $("#server-msg").html("");
+                                    $("#msg-from-server-div").slideUp("slow");
+                                }, 4000);
+
+                                $('.progress-bar').text('0%');
+                                $('.progress-bar').width('0%');
+                                $('.upload-btn').prop('disabled', false);
+                            }
+                            $.get("/Upload-List", function(data, status){
+                                console.log("Data: " + data + "\nStatus: " + status);
+                                $("#file-list").empty();
+                                $.each(data, function( index, value ) {
+                                    console.log( index + ": " + value );
+                                    $("#file-list").append('<li'+ (thisFile && thisFile == value?' style="color: green; font-weight: bold"':'') + '><a href="/uploads/'+value+'">' + value + '<\/a><\/li>');
+                                });
+                            });
+
+                        }
+                        LiveList();
+                    </script> <!-- /////////////////////////  END CONTENT ////////////////////////////// -->
+                </article>
+            </div>
+        </section>
+    </article>
+</div>
+</body>
+</html>
