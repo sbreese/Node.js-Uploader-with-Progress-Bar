@@ -5,8 +5,6 @@ var fs = require('fs');                 // used in File Uploader
 var nodemailer = require('nodemailer'); // used in File Uploader
 var app = express();
 
-app.set('port', (process.env.PORT || 5000));
-
 // Use express.static middleware to serve up the static files in our public/ directory
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -120,7 +118,7 @@ Your Name`
 });
 
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+app.listen(3000, function() {
+  console.log('Node app is running on port', 3000);
 });
 
