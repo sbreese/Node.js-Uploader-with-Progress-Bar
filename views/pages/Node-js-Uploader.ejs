@@ -150,7 +150,7 @@
                         // BEGIN live list:
                         function LiveList(thisFile, serverMsg) {
                             if (serverMsg) {
-                                $("#server-msg").html("<h2>"+serverMsg+"<\/h2>");
+                                $("#server-msg").html("<h4>"+serverMsg+"<\/h4>");
                                 $("#msg-from-server-div").slideDown("slow");
                                 setTimeout(function(){ $("#server-msg").html("");
                                     $("#msg-from-server-div").slideUp("slow");
