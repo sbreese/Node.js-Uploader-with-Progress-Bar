@@ -32,6 +32,7 @@ app.post('/Node-js-Uploader', function(req, res) {
   // create an incoming form object
   var form = new formidable.IncomingForm();
   var msgComplete;
+  var fileName;
   var acceptableExt = ["pdf","png","jpg","gif","mp4","mov","avi","txt","mpeg4","flv"];
 
   // specify that we want to allow the user to upload multiple files in a single request
@@ -43,6 +44,7 @@ app.post('/Node-js-Uploader', function(req, res) {
   // every time a file has been uploaded successfully,
   // rename it to it's orignal name
   form.on('file', function(field, file) {
+    fileName = file.name;
     var ext = file.name.split('.').pop();
     console.log("ext:", ext);
     if (file.size > 50000000) {
@@ -90,7 +92,7 @@ app.post('/Node-js-Uploader', function(req, res) {
       to: 'your@email.com',
       subject: 'A file was uploaded to your website',
       text: `Hi,
-A file was just uploaded to your personal
+A file named ${fileName} was just uploaded to your personal
 website via the upload form on the File Uploader page.
 
 http://www.yourdomain.com/Node-js-Uploader
